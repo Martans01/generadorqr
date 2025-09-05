@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react'
 import QRCode from 'qrcode'
-import { Upload, Download, X, Copy, Sparkles, Star, Zap, Palette, Image as ImageIcon, Settings, Sliders, RotateCw, Layers, Eye, ChevronDown, ChevronRight } from 'lucide-react'
+import Image from 'next/image'
+import { Download, X, Copy, Sparkles, Star, Zap, Palette, Image as ImageIcon, Settings, ChevronDown, ChevronRight, Eye } from 'lucide-react'
 
 type QRStyle = 'squares' | 'dots' | 'rounded' | 'diamond' | 'hexagon'
 type QRColorScheme = 'gradient' | 'ocean' | 'sunset' | 'forest' | 'purple' | 'neon' | 'rainbow' | 'monochrome' | 'pastel' | 'custom'
@@ -37,7 +38,7 @@ export default function QRGeneratorPro({ className = '' }: QRGeneratorProProps) 
   // Advanced customization states
   const [qrStyle, setQrStyle] = useState<QRStyle>('rounded')
   const [colorScheme, setColorScheme] = useState<QRColorScheme>('gradient')
-  const [pattern, setPattern] = useState<QRPattern>('solid')
+  const [pattern] = useState<QRPattern>('solid')
   const [effect, setEffect] = useState<QREffect>('none')
   const [frame, setFrame] = useState<QRFrame>('none')
   const [frameText, setFrameText] = useState('SCAN ME')
@@ -174,7 +175,7 @@ export default function QRGeneratorPro({ className = '' }: QRGeneratorProProps) 
     }
   }
 
-  const drawCustomQR = (ctx: CanvasRenderingContext2D, data: any[], moduleSize: number) => {
+  const drawCustomQR = (ctx: CanvasRenderingContext2D, data: number[][], moduleSize: number) => {
     const colors = getColorScheme(colorScheme)
     
     for (let row = 0; row < data.length; row++) {
@@ -278,7 +279,7 @@ export default function QRGeneratorPro({ className = '' }: QRGeneratorProProps) 
     ctx.fill()
   }
 
-  const drawFrame = (ctx: CanvasRenderingContext2D, canvasSize: number, colors: any, text: string) => {
+  const drawFrame = (ctx: CanvasRenderingContext2D, canvasSize: number, colors: {primary: string, secondary: string, background: string}, text: string) => {
     const center = canvasSize / 2
     const textPadding = 12
     const frameMargin = 15
@@ -572,7 +573,7 @@ export default function QRGeneratorPro({ className = '' }: QRGeneratorProProps) 
       ctx.fillStyle = colors.background
       ctx.fillRect(0, 0, actualSize, actualSize)
       
-      const modules = []
+      const modules: number[][] = []
       for (let row = 0; row < moduleCount; row++) {
         modules[row] = []
         for (let col = 0; col < moduleCount; col++) {
@@ -593,7 +594,7 @@ export default function QRGeneratorPro({ className = '' }: QRGeneratorProProps) 
       }
       
       if (logoPreview) {
-        const logo = new Image()
+        const logo = new window.Image()
         logo.onload = () => {
           const logoPixelSize = Math.floor((qrSize * logoSize) / 100)
           const bgSize = logoPixelSize + Math.floor(moduleSize * 1.5)
@@ -648,7 +649,7 @@ export default function QRGeneratorPro({ className = '' }: QRGeneratorProProps) 
       console.error('Error generating QR:', error)
       setIsGenerating(false)
     }
-  }, [url, size, margin, qrStyle, colorScheme, pattern, effect, rotation, opacity, logoPreview, logoSize, logoStyle, frame, frameText])
+  }, [url, size, margin, qrStyle, colorScheme, pattern, effect, rotation, opacity, logoPreview, logoSize, logoStyle, frame, frameText, drawCustomQR, drawFrame, getColorScheme])
 
   const generateSVG = (): string => {
     try {
@@ -995,7 +996,7 @@ export default function QRGeneratorPro({ className = '' }: QRGeneratorProProps) 
                   {logoPreview ? (
                     <div className="space-y-4 mt-4">
                       <div className="flex items-center gap-4 p-4 bg-green-50 rounded-lg border border-green-200">
-                        <img src={logoPreview} alt="Logo" className="w-12 h-12 object-cover rounded-lg" />
+                        <Image src={logoPreview} alt="Logo" width={48} height={48} className="w-12 h-12 object-cover rounded-lg" />
                         <div className="flex-1">
                           <p className="font-medium text-gray-800">{logoFile?.name}</p>
                           <p className="text-sm text-green-600">Logo cargado</p>

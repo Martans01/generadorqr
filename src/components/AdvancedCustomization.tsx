@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Palette, Shapes, Template, Sparkles, Sliders, Eye } from 'lucide-react'
+import { Palette, Shapes, Sparkles } from 'lucide-react'
 
 export type QRTemplate = {
   id: string
@@ -112,14 +112,14 @@ export default function AdvancedCustomization({
       <div className="border-b border-gray-100">
         <div className="flex">
           {[
-            { id: 'templates', name: 'Plantillas', icon: Template },
+            { id: 'templates', name: 'Plantillas', icon: Sparkles },
             { id: 'styles', name: 'Estilos', icon: Shapes },
             { id: 'colors', name: 'Colores', icon: Palette },
             { id: 'effects', name: 'Efectos', icon: Sparkles }
           ].map(({ id, name, icon: Icon }) => (
             <button
               key={id}
-              onClick={() => setActiveTab(id as any)}
+              onClick={() => setActiveTab(id as 'templates' | 'colors' | 'effects')}
               className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-all ${
                 activeTab === id
                   ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
@@ -138,7 +138,7 @@ export default function AdvancedCustomization({
         {activeTab === 'templates' && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-              <Template className="w-5 h-5" />
+              <Sparkles className="w-5 h-5" />
               Plantillas Prediseñadas
             </h3>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
